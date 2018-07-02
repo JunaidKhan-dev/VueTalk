@@ -1,0 +1,49 @@
+
+<template>
+    <div class="new-message">
+        <form @submit.prevent="addMessage">
+            <label for="new">New Message (enter to add):</label>
+            <input type="text" id="new" v-model="newMessage" >
+            <p v-if="feedback" class="red-text">{{feedback}}</p>
+        </form>
+        
+    </div>
+</template>
+
+<script>
+import db from '../firebase/init'
+/* eslint-disable */
+
+export default {
+    name:'NewMessage',
+    props:['name'],
+    data(){
+        return{
+            newMessage:'',
+            feedback:null
+        }
+    },
+    methods:{
+      addMessage(){
+          if(this.newMessage){
+              db.collection('messages').add({
+                content: this.newMessage,
+                name: this.name,
+                timestamp: Date.now()
+              }).catch(err => console.log(err))
+              this.newMessage=null
+              this.feedback=null
+          }else{
+              this.feedback='you must enter the message in order to send'
+
+          }
+          
+      }  
+    }
+
+}
+</script>
+
+<style>
+
+</style>
